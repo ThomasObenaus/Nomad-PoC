@@ -2,6 +2,23 @@
 
 ## 2018-02-21
 
+### Added started the ping_services in docker-swarm using a compose-file
+
+#### Initialize swarm and deploy 3 ping_services
+
+```bash
+cd service
+docker swarm init
+docker stack deploy -c docker-compose.yml ping_service
+```
+
+#### Cleanup
+
+```bash
+docker stack rm ping_service
+docker swarm leave --force
+```
+
 ### Dockerized the ping_service
 
 Now you can simply build and run the ping_service using docker.

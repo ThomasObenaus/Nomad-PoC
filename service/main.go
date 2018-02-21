@@ -1,10 +1,11 @@
 package main
 
 import (
-	"flag"
+	//"flag"
 	"log"
 	"net/http"
-	//"github.com/namsral/flag"
+
+	"github.com/namsral/flag"
 )
 
 const version = "v1"
@@ -12,7 +13,7 @@ const version = "v1"
 func main() {
 
 	var addrOfConsumer = flag.String("consumer", ":8080", "The addr of the consumer (this application instance)")
-	var serviceName = flag.String("n", "foo", "The name of the consumer service instance (this application instance)")
+	var serviceName = flag.String("service_name", "foo", "The name of the consumer service instance (this application instance)")
 	var addrOfProvider = flag.String("provider", "", "The addr of the provider (another instance of this application)")
 	flag.Parse()
 

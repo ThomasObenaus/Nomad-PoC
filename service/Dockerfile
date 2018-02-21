@@ -1,28 +1,26 @@
+################### BUILDER IMAGE ################################
 FROM golang:alpine AS builder
 
-# Set the working directory to /app
-WORKDIR /app
+# install git
+RUN set -ex &&\ 
+  apk update &&\ 
+  apk add --no-cache git
 
-# Copy the current directory contents into the container at /app
-ADD . /app
+# set up go dep
+RUN go get -u github.com/golang/dep/cmd/dep
 
-# build the service
-RUN go build -o service_bin
+COPY Gopkg.lock Gopkg.toml /go/src/service/
+WORKDIR /go/src/service/
+# Install library dependencies
+RUN dep ensure -vendor-only
 
+# copy service files and build the service
+COPY . /go/src/service/
+RUN go build -o /bin/service
 
-# nothing needed for golang
+#################### SERVICE IMAGE ################################
+## nothing needed for golang
 FROM alpine
+COPY --from=builder /bin/service /bin/service
 
-WORKDIR /app
-
-COPY --from=builder /app/service_bin ./service_bin
-
-# Make port 8080 available to the world outside this container
-EXPOSE 8080
-
-# Define environment variable
-ENV NAME=World
-
-# Run the service
-#n -n s1 -consumer :8080
-CMD ["echo $NAME"]
+ENTRYPOINT ["/bin/service"]

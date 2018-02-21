@@ -1,41 +1,31 @@
 package main
 
 import (
-	"encoding/json"
 	"flag"
 	"log"
 	"net/http"
 )
 
-type pingResponse struct {
-	Message string `json:"message"`
-	Name    string `json:"name"`
-	Version string `json:"version"`
-}
-
 const version = "v1"
 
 func main() {
 
-	var addr = flag.String("addr", ":8080", "The addr of the application")
-	var serviceName = flag.String("n", "foo", "The name of this service instance")
+	var addrOfConsumer = flag.String("consumer", ":8080", "The addr of the consumer (this application instance)")
+	var serviceName = flag.String("n", "foo", "The name of the consumer service instance (this application instance)")
+	var addrOfProvider = flag.String("provider", "", "The addr of the provider (another instance of this application)")
 	flag.Parse()
 
-	http.HandleFunc("/ping", func(w http.ResponseWriter, r *http.Request) {
-
-		response := &pingResponse{
-			Message: "pong",
-			Name:    *serviceName,
-			Version: version,
-		}
-		if err := json.NewEncoder(w).Encode(response); err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-		}
-	})
+	http.Handle("/ping", &Service{Name: *serviceName, ProviderAddress: *addrOfProvider, Version: version})
 
 	//start the web server
-	log.Println("Start listening at ", *addr)
-	if err := http.ListenAndServe(*addr, nil); err != nil {
+	log.Printf("%s starts listening at %s.\n", *serviceName, *addrOfConsumer)
+
+	if len(*addrOfProvider) > 0 {
+		log.Printf("The provider at %s is used.\n", *addrOfProvider)
+	} else {
+		log.Println("No provider is used.")
+	}
+	if err := http.ListenAndServe(*addrOfConsumer, nil); err != nil {
 		log.Fatal("ListenAndServer:", err)
 	}
 

@@ -1,7 +1,7 @@
 .terraform
 terraform.tfstate
 terraform.tfstate.backup
-service_bin
-service/debug
-service/vendor/
+ping_service_bin
+ping_service/debug
+ping_service/vendor/
 Gopkg.lock

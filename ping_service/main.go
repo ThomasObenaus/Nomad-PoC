@@ -1,7 +1,6 @@
 package main
 
 import (
-	//"flag"
 	"log"
 	"net/http"
 
@@ -17,7 +16,7 @@ func main() {
 	var addrOfProvider = flag.String("provider", "", "The addr of the provider (another instance of this application)")
 	flag.Parse()
 
-	http.Handle("/ping", &Service{Name: *serviceName, ProviderAddress: *addrOfProvider, Version: version})
+	http.Handle("/ping", &PingService{Name: *serviceName, ProviderAddress: *addrOfProvider, Version: version})
 
 	//start the web server
 	log.Printf("%s starts listening at %s.\n", *serviceName, *addrOfConsumer)

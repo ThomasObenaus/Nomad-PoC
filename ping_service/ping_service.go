@@ -13,13 +13,13 @@ type pingResponse struct {
 	Version string `json:"version"`
 }
 
-type Service struct {
+type PingService struct {
 	Name            string
 	Version         string
 	ProviderAddress string
 }
 
-func (s *Service) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (s *PingService) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	var message string
 
 	if len(s.ProviderAddress) == 0 {
@@ -45,7 +45,7 @@ func (s *Service) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (s *Service) getMessage(providerAddress string) (string, error) {
+func (s *PingService) getMessage(providerAddress string) (string, error) {
 	url := "http://" + providerAddress + "/ping"
 	client := &http.Client{
 		Timeout: time.Second * 1,

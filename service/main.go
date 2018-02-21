@@ -4,6 +4,7 @@ import (
 	"flag"
 	"log"
 	"net/http"
+	//"github.com/namsral/flag"
 )
 
 const version = "v1"

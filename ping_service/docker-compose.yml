@@ -15,7 +15,7 @@ services:
       - webnet
     healthcheck:
       test: ["CMD", "wget", "-O -", "http://localhost:8080/ping"]
-      interval: 10s
+      interval: 20s
       timeout: 10s
       retries: 3
   s2:
@@ -31,6 +31,11 @@ services:
       - "81:8080"
     networks:
       - webnet
+    healthcheck:
+      test: ["CMD", "wget", "-O -", "http://localhost:8080/ping"]
+      interval: 20s
+      timeout: 10s
+      retries: 3
   s3:
     image: thobe/ping_service:0.0.1
     environment:
@@ -43,5 +48,10 @@ services:
       - "82:8080"
     networks:
       - webnet
+    healthcheck:
+      test: ["CMD", "wget", "-O -", "http://localhost:8080/ping"]
+      interval: 20s
+      timeout: 10s
+      retries: 3
 networks:
   webnet:

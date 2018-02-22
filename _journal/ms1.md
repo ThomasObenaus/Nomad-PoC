@@ -7,15 +7,26 @@
 #### Initialize swarm and deploy 3 ping_services
 
 ```bash
-cd service
-docker swarm init
+cd ping_service &&\
+docker swarm init &&\
 docker stack deploy -c docker-compose.yml ping_service
+```
+
+#### Watch the service-chain
+
+```bash
+#in another terminal, use the service
+watch -x curl -s localhost:80/ping
+# you should see something like {"message":"/[s1,v1]/[s2,v1]/[s3,v1](PONG)","name":"s1","version":"v1"}
+
+#in another terminal you can check if the services go healthy
+docker inspect $(docker container ls|awk '/ping_service/{print $1}') | grep Health\": -A 9
 ```
 
 #### Cleanup
 
 ```bash
-docker stack rm ping_service
+docker stack rm ping_service &&\
 docker swarm leave --force
 ```
 

@@ -4,10 +4,7 @@
     "path": "."
   },
   {
-    "path": "/home/winnietom/work/projects/golang/src/go_blueprints"
-  },
-  {
-    "path": "/home/winnietom/work/projects/golang/src/socialpoll"
+    "path": "/home/winnietom/work/projects/cos/Nomad/terraform-aws-nomad"
   }
 ],
   "settings": {}

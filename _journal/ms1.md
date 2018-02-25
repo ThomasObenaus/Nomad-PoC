@@ -2,6 +2,18 @@
 
 ## 2018-02-21
 
+### Push the service image to docker hub
+
+```bash
+# 1. tag the image 
+# docker tag image username/repository:tag
+docker tag ping_service thobe/ping_service:0.0.1
+
+# 2. push the image
+# docker push username/repository:tag
+docker push thobe/ping_service:0.0.1
+```
+
 ### Added started the ping_services in docker-swarm using a compose-file
 
 #### Initialize swarm and deploy 3 ping_services

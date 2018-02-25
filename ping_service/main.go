@@ -18,6 +18,11 @@ func main() {
 
 	http.Handle("/ping", &PingService{Name: *serviceName, ProviderAddress: *addrOfProvider, Version: version})
 
+	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		log.Printf("Path '/' is not implemented")
+		http.Error(w, "Path '/' is not implemented", http.StatusInternalServerError)
+	})
+
 	//start the web server
 	log.Printf("%s starts listening at %s.\n", *serviceName, *addrOfConsumer)
 

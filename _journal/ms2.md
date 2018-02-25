@@ -1,5 +1,67 @@
 # First Nomad Cluster (MS 2)
 
+## 2018-02-27
+
+### Sample from scratch
+
+#### Create the infrastructure
+
+```bash
+# 1. Clone the infrastructure-repo
+git clone git@github.com:ThomasObenaus/terraform-aws-nomad.git &&\
+cd terraform-aws-nomad
+
+# 2. Build the infra
+terraform init &&\
+terraform plan -out file.plan &&\
+terraform apply file.plan
+```
+
+#### Configure and check nomad
+
+```bash
+# Wait for the servers getting ready and set the NOMAD_ADDR env variable
+server_ip=$(examples/nomad-examples-helper/get_nomad_server_ip.sh) &&\
+export NOMAD_ADDR=http://$server_ip:4646
+
+# Show some commands
+examples/nomad-examples-helper/nomad-examples-helper.sh
+```
+
+#### Deploy the ping_service
+
+```bash
+# 1. Deploy fabio
+nomad run examples/nomad-examples-helper/fabio.nomad
+
+# 2. Deploy ping_service
+nomad run examples/nomad-examples-helper/ping_service.nomad
+```
+
+
+#### Test call to the service
+
+```bash
+# Currently we havent set up a elastic loadbalancer, thus we have to chose one
+# of the nomad nodes and use their ip for the call.
+# On each node a fabio is listening on port 9999. Fabio will route our /ping call to the ping_service.
+
+# 1. find the ip of one instance
+instance_ip=$(examples/nomad-examples-helper/get_nomad_client_info.sh | awk '!/INSTANCE/{print $1}' | head -n 1)
+
+# call the service
+curl http://$instance_ip:9999/ping
+```
+
+### Issues with deployment of ping_service on nomad
+
+Hint: Export the NOMAD_ADDR in order to avoid typing the ```-address``` parameter for each nomad commadn. ```export NOMAD_ADDR=http://<ip-address of your nomad-master>:<port>```
+
+Note: ```Constraint "missing drivers" filtered 6 nodes``` when applying a nomad task with a docker driver means that docker is not installed. The problem was instead of building an AMI with docker from the example (see: 2018-02-22) I buit the nomad-consul.json and not the nomad-consul-docker.json
+
+Note: Changing the ami in an AWS autoscaling group does not update any instances. With the change the ASG just knows which ami to take for new instances. Thus you have to terminate instances in order to start the exchange of ami's.
+
+
 ## 2018-02-22
 
 ### Started with the Nomad module from terraform-module registry

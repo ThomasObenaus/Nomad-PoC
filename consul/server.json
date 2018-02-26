@@ -1,6 +1,6 @@
 {
-  "datacenter": "dc1",
-  "data_dir": "/tmp/consul_data_dir",
+  "datacenter": "MY_DATA_CENTER",
+  "data_dir": "/tmp/consul_data_dir_server",
   "log_level": "INFO",
   "node_name": "server",
   "server": true,

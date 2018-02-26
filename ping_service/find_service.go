@@ -14,7 +14,7 @@ type Client interface {
 	// Get a Service from consul
 	Service(string, string) ([]*consul.ServiceEntry, *consul.QueryMeta, error)
 	// Register a service with local agent
-	Register(string, int) error
+	Register(string, string, int) error
 	// Deregister a service with local agent
 	DeRegister(string) error
 
@@ -39,11 +39,14 @@ func NewConsulClient(addr string) (Client, error) {
 }
 
 // Register a service with consul local agent
-func (c *client) Register(name string, port int) error {
+func (c *client) Register(name string, address string, port int) error {
 	rand.Seed(time.Now().UTC().UnixNano())
+
 	reg := &consul.AgentServiceRegistration{
-		Name: name,
-		Port: port,
+		ID:      name,
+		Name:    name,
+		Port:    port,
+		Address: address,
 	}
 	return c.consul.Agent().ServiceRegister(reg)
 }

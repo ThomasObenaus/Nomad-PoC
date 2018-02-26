@@ -72,6 +72,8 @@ func (s *PingService) getMessage(providerName string, providerAddr string, hop i
 	}
 
 	url := "http://" + addrOfProvider + "/ping?hop=" + strconv.Itoa(hop)
+	log.Println("Call: ", url)
+
 	client := &http.Client{
 		Timeout: time.Second * 1,
 	}

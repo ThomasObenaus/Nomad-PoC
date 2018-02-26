@@ -1,14 +1,22 @@
 version: "3"
 services:
+  consul-server:
+    image: consul
+    ports:
+      - "8500:8500"
+      - "8600:8600"
+      - "8301:8301"
+    networks:
+      - webnet
   s1:
     image: thobe/ping_service:0.0.4
     environment:
       - SERVICE_NAME=s1
-      - PROVIDER_ADDR=s2:8080
-    deploy:
-      replicas: 1
-      restart_policy:
-        condition: on-failure
+      - CONSUL_SERVER_ADDR=$DOCKER_HOST_IP:8500
+      - REGISTRATION_IP=$DOCKER_HOST_IP
+      - REGISTRATION_PORT=80
+      - REGISTRATION_NAME=ping-service
+      - PROVIDER=pong-service
     ports:
       - "80:8080"
     networks:
@@ -22,30 +30,13 @@ services:
     image: thobe/ping_service:0.0.4
     environment:
       - SERVICE_NAME=s2
-      - PROVIDER_ADDR=s3:8080
-    deploy:
-      replicas: 1
-      restart_policy:
-        condition: on-failure
+      - CONSUL_SERVER_ADDR=$DOCKER_HOST_IP:8500
+      - REGISTRATION_IP=$DOCKER_HOST_IP
+      - REGISTRATION_PORT=81
+      - REGISTRATION_NAME=pong-service
+      - PROVIDER=ping-service
     ports:
       - "81:8080"
-    networks:
-      - webnet
-    healthcheck:
-      test: ["CMD", "wget", "-O -", "http://localhost:8080/ping"]
-      interval: 20s
-      timeout: 10s
-      retries: 3
-  s3:
-    image: thobe/ping_service:0.0.4
-    environment:
-      - SERVICE_NAME=s3
-    deploy:
-      replicas: 1
-      restart_policy:
-        condition: on-failure
-    ports:
-      - "82:8080"
     networks:
       - webnet
     healthcheck:

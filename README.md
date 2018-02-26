@@ -28,5 +28,6 @@
   * Create the sample service.
 
 2. __MS2__ [First Nomad Cluster](_journal/ms2.md).
+3. __MS3__ [Service Discovery with Consul HTTP-API](_journal/ms3.md).
 3. __MS3__ Deploy Sample Services.
 4. __MS4__ ServiceDiscovery with Envoy and Consul.

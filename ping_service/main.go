@@ -11,14 +11,14 @@ import (
 
 const version = "v1"
 
-func registerService(consul Client, serviceName string, port int) {
+func registerService(consul Client, serviceName string, address string, port int) {
 	for {
-		if err := consul.Register(serviceName, port); err != nil {
-			log.Printf("Error unable to register %s at consul: %s\n", serviceName, err.Error())
+		if err := consul.Register(serviceName, address, port); err != nil {
+			log.Printf("Error unable to register %s (%s:%d) at consul: %s\n", serviceName, address, port, err.Error())
 			log.Println("Waiting for 20 sec")
 			time.Sleep(time.Second * 20)
 		} else {
-			log.Println("Sucessfully registered")
+			log.Printf("Sucessfully registered %s %s:%d\n", serviceName, address, port)
 			break
 		}
 	}
@@ -26,11 +26,14 @@ func registerService(consul Client, serviceName string, port int) {
 
 func main() {
 
-	var portOfConsumer = flag.Int("consumer", 8080, "The port where the consumer shall listen to (this application instance). Defaults to 8080.")
-	var serviceName = flag.String("service_name", "foo", "The name of the consumer service instance (this application instance). Defaults to foo.")
+	var localPort = flag.Int("p", 8080, "The port where the application instance listens to. Defaults to 8080.")
+	var serviceName = flag.String("service-name", "foo", "The name of the consumer service instance (this application instance). Defaults to foo.")
 	var nameOfProvider = flag.String("provider", "", "The service_name of the provider (another instance of this application). Defaults to \"\".")
-	var addrOfProvider = flag.String("provider_addr", "", "The address of the provider (another instance of this application). Defaults to \"\".")
-	var addrOfConsul = flag.String("consul", "127.0.0.1:8500", "The addr of the consul server. Defaults to 127.0.0.1:8500.")
+	var addrOfProvider = flag.String("provider-addr", "", "The address of the provider (another instance of this application). Defaults to \"\".")
+	var registrationIP = flag.String("registration-ip", "127.0.0.1", "The ip to register this service at consul. Defaults to 127.0.0.1")
+	var registrationPort = flag.Int("registration-port", 8080, "The port to register this service at consul. Defaults to 8080")
+	var registerAsService = flag.String("registration-name", "ping-service", "The name that is used to register at consul. Defaults to ping-service.")
+	var addrOfConsul = flag.String("consul-server-addr", "127.0.0.1:8500", "The addr of the consul-server. Defaults to 127.0.0.1:8500.")
 	flag.Parse()
 
 	consul, err := NewConsulClient(*addrOfConsul)
@@ -39,7 +42,7 @@ func main() {
 	}
 
 	// register at consul in background
-	go registerService(consul, "ping-service", *portOfConsumer)
+	go registerService(consul, *registerAsService, *registrationIP, *registrationPort)
 
 	http.Handle("/ping", &PingService{Name: *serviceName, ProviderAddr: *addrOfProvider, ProviderName: *nameOfProvider, Version: version, ConsulClient: consul})
 
@@ -49,7 +52,7 @@ func main() {
 	})
 
 	//start the web server
-	log.Printf("%s starts listening at %d.\n", *serviceName, *portOfConsumer)
+	log.Printf("%s starts listening at %d.\n", *serviceName, *localPort)
 
 	provider := *nameOfProvider
 	if len(provider) == 0 {
@@ -61,7 +64,7 @@ func main() {
 	} else {
 		log.Println("No provider is used.")
 	}
-	if err := http.ListenAndServe(":"+strconv.Itoa(*portOfConsumer), nil); err != nil {
+	if err := http.ListenAndServe(":"+strconv.Itoa(*localPort), nil); err != nil {
 		log.Fatal("ListenAndServer:", err)
 	}
 

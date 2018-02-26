@@ -38,7 +38,6 @@ nomad run examples/nomad-examples-helper/fabio.nomad
 nomad run examples/nomad-examples-helper/ping_service.nomad
 ```
 
-
 #### Test call to the service
 
 ```bash
@@ -51,6 +50,12 @@ instance_ip=$(examples/nomad-examples-helper/get_nomad_client_info.sh | awk '!/I
 
 # call the service
 curl http://$instance_ip:9999/ping
+```
+
+#### Clean up everything
+
+```bash
+terraform destroy
 ```
 
 ### Issues with deployment of ping_service on nomad

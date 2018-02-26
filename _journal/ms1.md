@@ -59,15 +59,15 @@ docker run -p 80:8080 ping_service
 #### Start a container with parameters
 
 ```bash
-docker run -p 80:8080 ping_service -service_name s1 -consumer :8080
+docker run -p 80:8080 ping_service -service_name s1 -consumer 8080
 ```
 
 #### Chainging the ping_services
 
 ```bash
-export DOCKER_HOST_IP=$(ip route|awk '/docker/ { print $9 }') &&\
-docker run -d -p 80:8080 ping_service -service_name s1 -provider $DOCKER_HOST_IP:81 &&\
-docker run -d -p 81:8080 ping_service -service_name s2 -provider $DOCKER_HOST_IP:82 &&\
+export DOCKER_HOST_IP=$(ip route|awk '/docker/ { print $9 }'|head -n 1) &&\
+docker run -d -p 80:8080 ping_service -service_name s1 -provider_addr $DOCKER_HOST_IP:81 &&\
+docker run -d -p 81:8080 ping_service -service_name s2 -provider_addr $DOCKER_HOST_IP:82 &&\
 docker run -d -p 82:8080 ping_service -service_name s3
 ```
 

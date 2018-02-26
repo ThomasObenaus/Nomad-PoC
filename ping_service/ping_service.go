@@ -18,6 +18,7 @@ type PingService struct {
 	Name         string
 	Version      string
 	ProviderName string
+	ProviderAddr string
 	ConsulClient Client
 }
 
@@ -33,11 +34,13 @@ func (s *PingService) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 	hop++
 
-	if len(s.ProviderName) == 0 || hop > maxHop {
+	hasNoProvider := (len(s.ProviderAddr) == 0) && (len(s.ProviderName) == 0)
+
+	if hasNoProvider || hop > maxHop {
 		message = "(PONG)"
 	} else {
 		var err error
-		message, err = s.getMessage(s.ProviderName, hop)
+		message, err = s.getMessage(s.ProviderName, s.ProviderAddr, hop)
 		if err != nil {
 			log.Println("[" + s.Name + "," + s.Version + "] Error: " + err.Error())
 		}
@@ -57,14 +60,18 @@ func (s *PingService) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (s *PingService) getMessage(providerName string, hop int) (string, error) {
+func (s *PingService) getMessage(providerName string, providerAddr string, hop int) (string, error) {
+	addrOfProvider := providerAddr
 
-	addr, err := s.ConsulClient.FindProvider(providerName)
-	if err != nil {
-		return "(BOING)", err
+	if len(providerName) > 0 {
+		addr, err := s.ConsulClient.FindProvider(providerName)
+		if err != nil {
+			return "(BOING)", err
+		}
+		addrOfProvider = addr
 	}
 
-	url := "http://" + addr + "/ping?hop=" + strconv.Itoa(hop)
+	url := "http://" + addrOfProvider + "/ping?hop=" + strconv.Itoa(hop)
 	client := &http.Client{
 		Timeout: time.Second * 1,
 	}

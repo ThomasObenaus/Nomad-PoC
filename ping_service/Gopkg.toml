@@ -24,3 +24,7 @@
 [[constraint]]
   name = "github.com/namsral/flag"
   version = "1.7.4-pre"
+
+[[constraint]]
+  name = "github.com/hashicorp/consul"
+  version = "1.0.6"

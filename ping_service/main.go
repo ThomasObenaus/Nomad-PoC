@@ -3,20 +3,43 @@ package main
 import (
 	"log"
 	"net/http"
+	"strconv"
+	"time"
 
 	"github.com/namsral/flag"
 )
 
 const version = "v1"
 
+func registerService(consul Client, serviceName string, port int) {
+	for {
+		if err := consul.Register(serviceName, port); err != nil {
+			log.Printf("Error unable to register %s at consul: %s\n", serviceName, err.Error())
+			time.Sleep(time.Second * 1)
+		} else {
+			log.Println("Sucessfully registered")
+			break
+		}
+	}
+}
+
 func main() {
 
-	var addrOfConsumer = flag.String("consumer", ":8080", "The addr of the consumer (this application instance)")
-	var serviceName = flag.String("service_name", "foo", "The name of the consumer service instance (this application instance)")
-	var addrOfProvider = flag.String("provider", "", "The addr of the provider (another instance of this application)")
+	var portOfConsumer = flag.Int("consumer", 8080, "The port where the consumer shall listen to (this application instance). Defaults to 8080.")
+	var serviceName = flag.String("service_name", "foo", "The name of the consumer service instance (this application instance). Defaults to foo.")
+	var nameOfProvider = flag.String("provider", "", "The service_name of the provider (another instance of this application). Defaults to \"\".")
+	var addrOfConsul = flag.String("consul", ":8500", "The addr of the consul server. Defaults to 127.0.0.1:8500.")
 	flag.Parse()
 
-	http.Handle("/ping", &PingService{Name: *serviceName, ProviderAddress: *addrOfProvider, Version: version})
+	consul, err := NewConsulClient(*addrOfConsul)
+	if err != nil {
+		log.Println("Error unable to create consul at: ", *addrOfConsul)
+	}
+
+	// register at consul in background
+	go registerService(consul, "ping-service", *portOfConsumer)
+
+	http.Handle("/ping", &PingService{Name: *serviceName, ProviderName: *nameOfProvider, Version: version, ConsulClient: consul})
 
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		log.Printf("Path '/' is not implemented")
@@ -24,14 +47,14 @@ func main() {
 	})
 
 	//start the web server
-	log.Printf("%s starts listening at %s.\n", *serviceName, *addrOfConsumer)
+	log.Printf("%s starts listening at %d.\n", *serviceName, *portOfConsumer)
 
-	if len(*addrOfProvider) > 0 {
-		log.Printf("The provider at %s is used.\n", *addrOfProvider)
+	if len(*nameOfProvider) > 0 {
+		log.Printf("The provider at %s is used.\n", *nameOfProvider)
 	} else {
 		log.Println("No provider is used.")
 	}
-	if err := http.ListenAndServe(*addrOfConsumer, nil); err != nil {
+	if err := http.ListenAndServe(":"+strconv.Itoa(*portOfConsumer), nil); err != nil {
 		log.Fatal("ListenAndServer:", err)
 	}
 

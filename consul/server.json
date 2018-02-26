@@ -1,0 +1,10 @@
+{
+  "datacenter": "dc1",
+  "data_dir": "/tmp/consul_data_dir",
+  "log_level": "INFO",
+  "node_name": "server",
+  "server": true,
+  "bootstrap": true,
+  "bind_addr": "127.0.0.1",
+  "ui": true
+}

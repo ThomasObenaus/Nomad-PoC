@@ -28,7 +28,14 @@ Consul provides two ways for service-discovery.
 
 In general it's no good idea to implement the service-discovery logic using the consul HTTP API directly in the service. But anyway I'll try it here.
 
-#### Start a consul-server and -client
+#### Start a consul-server and ping_services (with docker-compose)
+
+```bash
+cd consul
+docker-compose up
+```
+
+#### Start a consul-server and -client (separate calls)
 
 ```bash
 cd consul

@@ -5,7 +5,7 @@
 ### Push the service image to docker hub
 
 ```bash
-# 1. tag the image 
+# 1. tag the image
 # docker tag image username/repository:tag
 docker tag ping_service thobe/ping_service:0.0.1
 
@@ -24,7 +24,7 @@ docker swarm init &&\
 docker stack deploy -c docker-compose.yml ping_service
 ```
 
-#### Watch the service-chain
+#### Watch the service-chain in Docker Swarm Setup
 
 ```bash
 #in another terminal, use the service
@@ -35,7 +35,7 @@ watch -x curl -s localhost:80/ping
 docker inspect $(docker container ls|awk '/ping_service/{print $1}') | grep Health\": -A 9
 ```
 
-#### Cleanup
+#### Cleanup Docker Swarm Setup
 
 ```bash
 docker stack rm ping_service &&\

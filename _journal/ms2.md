@@ -75,8 +75,8 @@ sudo apt-get install sshuttle
 ```bash
 # open the sshuttle
 server_ip=$(examples/nomad-examples-helper/get_nomad_server_ip.sh) &&\
-subnet_mask=$(examples/nomad-examples-helper/get_nomad_client_info.sh | awk '!/INSTANCE/{print $3}' | head -n 1 | awk -F '.' '{print $1"."$2".0.0/16"}') &&\
-sshuttle -v -r ubuntu@$server_ip -e 'ssh -i ~/.ssh/kp_instances.pem' --dns -H $subnet_mask
+subnet_mask=$(examples/nomad-examples-helper/get_nomad_subnet_mask.sh) &&\
+sshuttle -v -r ubuntu@$server_ip -e 'ssh -v -o StrictHostKeyChecking=false -i ~/.ssh/kp_instances.pem ' --dns -H $subnet_mask
 ```
 
 ### Show the logs over commandline

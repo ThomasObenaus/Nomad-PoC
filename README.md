@@ -9,7 +9,7 @@
   * Monitoring with Prometheus and Grafana.
   * Tracing with Zipkin.
   * Persistant storage.
-  * RBAC 
+  * RBAC
   * SecretManagement with Vault.
   * ServiceDiscovery with Consul.
 * Evaluate/ implement envoy/ istio.
@@ -24,10 +24,13 @@
 
 1. __MS1__ [NW Infrastructure and Services](_journal/ms1.md).
 
-  * Set up networking infrastructure in terraform.
-  * Create the sample service.
+    * Set up networking infrastructure in terraform.
+    * Create the sample service.
 
 2. __MS2__ [First Nomad Cluster](_journal/ms2.md).
+
 3. __MS3__ [Service Discovery with Consul HTTP-API](_journal/ms3.md).
-3. __MS3__ Deploy Sample Services.
-4. __MS4__ ServiceDiscovery with Envoy and Consul.
+
+4. __MS3__ [Integrate Nomad in custom Infrastructure](_journal/ms4.md).
+
+5. __MS4__ ServiceDiscovery with Envoy and Consul.

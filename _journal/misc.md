@@ -1,5 +1,11 @@
 # Misc stuff
 
+## Deployment
+
+* Test/ validate the job-file before deployment: ```nomad plan <job-file>```
+* Show the status for a deployment ```nomad status <job-name>```
+* Show the cause of a failed deployment ```nomad status <allocation-id>```
+
 ## Logging
 
 ### Server Logs
@@ -7,7 +13,8 @@
 You have to log into a nomad-server node first.
 
 * Server-Log: ```/opt/nomad/log/```
-* Cloud-Init-Log: ```/var/log/user-data.log```
+* Nomad/ Consul install log: ```/var/log/user-data.log```
+* Cloud-Init-Log: ```/var/log/cloud-init.log``` and ```/var/log/cloud-init-output.log```
 
 ### Enable Service-Logs
 

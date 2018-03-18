@@ -42,6 +42,13 @@ nomad run examples/nomad-examples-helper/fabio.nomad
 nomad run examples/nomad-examples-helper/ping_service.nomad
 ```
 
+#### Watch deployment
+
+```bash
+watch -x examples/nomad-examples-helper/show_job_detail.sh ping_service
+```
+
+
 #### Test call to the service
 
 ```bash
@@ -53,7 +60,7 @@ nomad run examples/nomad-examples-helper/ping_service.nomad
 instance_ip=$(examples/nomad-examples-helper/get_nomad_client_info.sh | awk '!/INSTANCE/{print $1}' | head -n 1)
 
 # call the service
-curl http://$instance_ip:9999/ping
+watch -x curl -s http://$instance_ip:9999/ping
 ```
 
 #### Clean up everything
@@ -94,7 +101,7 @@ Note: It is possible to use aws credential profiles for packer
 packer build nomad-consul-docker.json
 ```
 
-ami: ami-adcba8c2
+ami: ami-fb94c510
 
 #### Set up the cluster
 

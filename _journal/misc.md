@@ -34,8 +34,8 @@ sudo apt-get install sshuttle
 
 ```bash
 # open the sshuttle
-server_ip=$(examples/nomad-examples-helper/get_nomad_server_ip.sh) &&\
-subnet_mask=$(examples/nomad-examples-helper/get_nomad_subnet_mask.sh) &&\
+server_ip=$(get_nomad_server_ip.sh) &&\
+subnet_mask=$(get_nomad_subnet_mask.sh) &&\
 sshuttle -v -r ubuntu@$server_ip -e 'ssh -v -o StrictHostKeyChecking=false -i ~/.ssh/kp_instances.pem ' --dns -H $subnet_mask
 ```
 

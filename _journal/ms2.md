@@ -56,41 +56,6 @@ instance_ip=$(examples/nomad-examples-helper/get_nomad_client_info.sh | awk '!/I
 curl http://$instance_ip:9999/ping
 ```
 
-### Logging
-
-For being able to see logging in nomad ui and on commandline you have to use enable access to the private ip-addresses of your nomad-servers. With standard setup your nomad ui is not able to show the logs.
-![alt text](_img/without_sshuttle.png)
-
-Here a tool named [sshuttle](https://sshuttle.readthedocs.io/en/stable/) helps. With this tool you can open a ssh-tunnel to one of your nomad-servers. Doing this you are blended into the VPC and can access the nodes using their private ips.
-
-### Set up sshuttle
-
-```bash
-# install
-sudo apt-get install sshuttle
-```
-
-### Open ssh tunnle
-
-```bash
-# open the sshuttle
-server_ip=$(examples/nomad-examples-helper/get_nomad_server_ip.sh) &&\
-subnet_mask=$(examples/nomad-examples-helper/get_nomad_subnet_mask.sh) &&\
-sshuttle -v -r ubuntu@$server_ip -e 'ssh -v -o StrictHostKeyChecking=false -i ~/.ssh/kp_instances.pem ' --dns -H $subnet_mask
-```
-
-### Show the logs over commandline
-
-```bash
-# stderr has to be used since currently everything is logged there
-nomad logs -stderr -f -job ping_service
-```
-
-### Logs in ui
-
-Current everything is shipped to stderr.
-![alt text](_img/with_sshuttle.png)
-
 #### Clean up everything
 
 ```bash
@@ -124,6 +89,11 @@ Note: It is possible to use aws credential profiles for packer
     ...
 ```
 
+```bash
+## build it
+packer build nomad-consul-docker.json
+```
+
 ami: ami-adcba8c2
 
 #### Set up the cluster
@@ -155,7 +125,7 @@ nomad server-members -address=http://18.197.84.170:4646
 firefox http://18.197.84.170:4646 &
 ```
 
-### Installed nomad from https://www.nomadproject.io/intro/getting-started/install.html
+### Installed nomad from [Nomad, getting started](https://www.nomadproject.io/intro/getting-started/install.html)
 
 Commands for vagrant:
 

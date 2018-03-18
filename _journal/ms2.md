@@ -50,14 +50,14 @@ nomad-examples-helper.sh
 
 ```bash
 # 1. Deploy fabio
-nomad run $ex_dir/nomad-examples-helper/fabio.nomad
+nomad run $ex_dir/fabio.nomad
 
 # 2. Deploy ping_service
 #!! first you have to adjust the job-definition
 # in $ex_dir/nomad-examples-helper/ping_service.nomad
 # the CONSUL_SERVER_ADDR variable must be set to the addr of
 # the consul server (which is in this setup) the same as the one of the nomad-server
-nomad run $ex_dir/nomad-examples-helper/ping_service.nomad
+nomad run $ex_dir/ping_service.nomad
 ```
 
 #### Watch deployment
@@ -65,7 +65,6 @@ nomad run $ex_dir/nomad-examples-helper/ping_service.nomad
 ```bash
 watch -x show_job_detail.sh ping_service
 ```
-
 
 #### Test call to the service
 

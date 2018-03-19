@@ -1,8 +1,3 @@
-provider "aws" {
-  profile = "${var.aws_profile}"
-  region  = "${var.aws_region}"
-}
-
 # Terraform 0.9.5 suffered from https://github.com/hashicorp/terraform/issues/14399, which causes this template the
 # conditionals in this template to fail.
 terraform {
@@ -23,11 +18,11 @@ module "nomad_servers" {
   max_size         = "${var.num_nomad_servers}"
   desired_capacity = "${var.num_nomad_servers}"
 
-  ami_id    = "${var.ami_id}"
+  ami_id    = "${var.nomad_ami_id}"
   user_data = "${data.template_file.user_data_nomad_server.rendered}"
 
-  vpc_id     = "${data.aws_vpc.default.id}"
-  subnet_ids = "${data.aws_subnet_ids.default.ids}"
+  vpc_id     = "${var.vpc_id}"
+  subnet_ids = "${var.nomad_server_subnet_ids}"
 
   # To make testing easier, we allow requests from any IP address here but in a production deployment, we strongly
   # recommend you limit this to the IP address ranges of known, trusted servers inside your VPC.
@@ -75,11 +70,11 @@ module "consul_servers" {
   cluster_tag_key   = "${var.cluster_tag_key}"
   cluster_tag_value = "${var.consul_cluster_name}"
 
-  ami_id    = "${var.ami_id}"
+  ami_id    = "${var.consul_ami_id}"
   user_data = "${data.template_file.user_data_consul_server.rendered}"
 
-  vpc_id     = "${data.aws_vpc.default.id}"
-  subnet_ids = "${data.aws_subnet_ids.default.ids}"
+  vpc_id     = "${var.vpc_id}"
+  subnet_ids = "${var.nomad_server_subnet_ids}"
 
   # To make testing easier, we allow Consul and SSH requests from any IP address here but in a production
   # deployment, we strongly recommend you limit this to the IP address ranges of known, trusted servers inside your VPC.
@@ -117,10 +112,10 @@ module "nomad_clients" {
 
   max_size         = "${var.num_nomad_clients}"
   desired_capacity = "${var.num_nomad_clients}"
-  ami_id           = "${var.ami_id}"
+  ami_id           = "${var.nomad_ami_id}"
   user_data        = "${data.template_file.user_data_nomad_client.rendered}"
-  vpc_id           = "${data.aws_vpc.default.id}"
-  subnet_ids       = "${data.aws_subnet_ids.default.ids}"
+  vpc_id           = "${var.vpc_id}"
+  subnet_ids       = "${var.nomad_server_subnet_ids}"
 
   # To make testing easier, we allow Consul and SSH requests from any IP address here but in a production
   # deployment, we strongly recommend you limit this to the IP address ranges of known, trusted servers inside your VPC.
@@ -156,17 +151,3 @@ data "template_file" "user_data_nomad_client" {
   }
 }
 
-# ---------------------------------------------------------------------------------------------------------------------
-# DEPLOY THE CLUSTER IN THE DEFAULT VPC AND SUBNETS
-# Using the default VPC and subnets makes this example easy to run and test, but it means Consul and Nomad are
-# accessible from the public Internet. In a production deployment, we strongly recommend deploying into a custom VPC
-# and private subnets.
-# ---------------------------------------------------------------------------------------------------------------------
-
-data "aws_vpc" "default" {
-  default = true
-}
-
-data "aws_subnet_ids" "default" {
-  vpc_id = "${data.aws_vpc.default.id}"
-}

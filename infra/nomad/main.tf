@@ -66,8 +66,9 @@ data "aws_ami" "nomad_consul" {
 module "nomad_servers" {
   # When using these modules in your own templates, you will need to use a Git URL with a ref attribute that pins you
   # to a specific version of the modules, such as the following example:
-  # source = "git::git@github.com:hashicorp/terraform-aws-nomad.git//modules/nomad-cluster?ref=v0.1.0"
-  source = "../../modules/nomad-cluster"
+  source = "git::git@github.com:ThomasObenaus/terraform-aws-nomad.git//modules/nomad-cluster?ref=master"
+  #source = "git::git@github.com:hashicorp/terraform-aws-nomad.git//modules/nomad-cluster?ref=v0.3.0"
+  #source = "../../modules/nomad-cluster"
 
   cluster_name  = "${var.nomad_cluster_name}-server"
   instance_type = "t2.micro"
@@ -166,8 +167,9 @@ data "template_file" "user_data_consul_server" {
 module "nomad_clients" {
   # When using these modules in your own templates, you will need to use a Git URL with a ref attribute that pins you
   # to a specific version of the modules, such as the following example:
-  # source = "git::git@github.com:hashicorp/terraform-aws-nomad.git//modules/nomad-cluster?ref=v0.0.1"
-  source = "../../modules/nomad-cluster"
+  #source = "git::git@github.com:hashicorp/terraform-aws-nomad.git//modules/nomad-cluster?ref=v0.3.0"
+  source = "git::git@github.com:ThomasObenaus/terraform-aws-nomad.git//modules/nomad-cluster?ref=master"
+  #source = "../../modules/nomad-cluster"
 
   cluster_name  = "${var.nomad_cluster_name}-client"
   instance_type = "t2.micro"

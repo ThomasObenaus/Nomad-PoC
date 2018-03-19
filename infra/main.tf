@@ -18,6 +18,6 @@ module "nomad" {
   nomad_ami_id            = "ami-fb94c510"
   consul_ami_id           = "ami-fb94c510"
   ssh_key_name            = "kp_instances"
-  vpc_id                  = "${data.aws_vpc.default.id}"
-  nomad_server_subnet_ids = "${data.aws_subnet_ids.default.ids}"
+  vpc_id                  = "${module.networking.vpc_id}"
+  nomad_server_subnet_ids = "${module.networking.subnet_ids}"
 }

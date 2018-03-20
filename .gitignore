@@ -4,6 +4,5 @@ terraform.tfstate.backup
 ping_service_bin
 ping_service/debug
 ping_service/vendor/
-Gopkg.lock
 .vagrant/
 file.plan

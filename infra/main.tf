@@ -1,4 +1,3 @@
-
 module "networking" {
   source = "modules/networking"
   region = "${var.aws_region}"
@@ -13,7 +12,7 @@ data "aws_subnet_ids" "default" {
 }
 
 module "nomad" {
-  source = "modules/nomad"
+  source                  = "modules/nomad"
   aws_region              = "${var.aws_region}"
   nomad_ami_id            = "ami-fb94c510"
   consul_ami_id           = "ami-fb94c510"

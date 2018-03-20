@@ -5,6 +5,9 @@
   },
   {
     "path": "/home/winnietom/work/projects/cos/Nomad/terraform-aws-nomad"
+  },
+  {
+    "path": "/home/winnietom/work/projects/cos/terraform-aws-nomad"
   }
 ],
   "settings": {}

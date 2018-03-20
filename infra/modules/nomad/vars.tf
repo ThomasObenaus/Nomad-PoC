@@ -12,9 +12,8 @@ variable "vpc_id" {
 
 variable "nomad_server_subnet_ids" {
   description = "Ids of the subnets to deploy the nomad servers into."
-  type = "list"
+  type        = "list"
 }
-
 
 variable "aws_region" {
   description = "The AWS region to deploy into (e.g. us-east-1)."

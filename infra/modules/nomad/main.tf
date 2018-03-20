@@ -4,14 +4,20 @@ terraform {
   required_version = ">= 0.9.3, != 0.9.5"
 }
 
+locals {
+  nomad_client_cluster_name = "${var.nomad_cluster_name}-client"
+  nomad_server_cluster_name = "${var.nomad_cluster_name}-server"
+}
+
 # ---------------------------------------------------------------------------------------------------------------------
 # DEPLOY THE NOMAD SERVER NODES
 # ---------------------------------------------------------------------------------------------------------------------
 module "nomad_servers" {
-  source = "git::git@github.com:ThomasObenaus/terraform-aws-nomad.git//modules/nomad-cluster?ref=master"
+  source = "git::git@github.com:hashicorp/terraform-aws-nomad.git//modules/nomad-cluster?ref=v0.3.0"
 
-  cluster_name  = "${var.nomad_cluster_name}-server"
-  instance_type = "t2.micro"
+  cluster_name      = "${local.nomad_server_cluster_name}"
+  cluster_tag_value = "${local.nomad_server_cluster_name}"
+  instance_type     = "t2.micro"
 
   # You should typically use a fixed size of 3 or 5 for your Nomad server cluster
   min_size         = "${var.num_nomad_servers}"
@@ -101,10 +107,11 @@ data "template_file" "user_data_consul_server" {
 # DEPLOY THE NOMAD CLIENT NODES
 # ---------------------------------------------------------------------------------------------------------------------
 module "nomad_clients" {
-  source = "git::git@github.com:ThomasObenaus/terraform-aws-nomad.git//modules/nomad-cluster?ref=master"
+  source = "git::git@github.com:hashicorp/terraform-aws-nomad.git//modules/nomad-cluster?ref=v0.3.0"
 
-  cluster_name  = "${var.nomad_cluster_name}-client"
-  instance_type = "t2.micro"
+  cluster_name      = "${local.nomad_client_cluster_name}"
+  cluster_tag_value = "${local.nomad_client_cluster_name}"
+  instance_type     = "t2.micro"
 
   # To keep the example simple, we are using a fixed-size cluster. In real-world usage, you could use auto scaling
   # policies to dynamically resize the cluster in response to load.
@@ -150,4 +157,3 @@ data "template_file" "user_data_nomad_client" {
     cluster_tag_value = "${var.consul_cluster_name}"
   }
 }
-

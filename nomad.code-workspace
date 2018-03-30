@@ -8,6 +8,21 @@
   },
   {
     "path": "/home/winnietom/work/projects/cos/terraform-aws-nomad"
+  },
+  {
+    "path": "/home/winnietom/work/projects/cos/Nomad/cos"
+  },
+  {
+    "path": "/home/winnietom/work/projects/cos/terraform-aws-consul"
+  },
+  {
+    "path": "/home/winnietom/work/projects/MiB3/05_development/infrastructure/tsd.nav.cloud.infrastructure.modules"
+  },
+  {
+    "path": "/home/winnietom/work/projects/MiB3/05_development/infrastructure/tsd.nav.cloud.infrastructure"
+  },
+  {
+    "path": "/home/winnietom/work/projects/golang/src/consul-envoy-xds"
   }
 ],
   "settings": {}

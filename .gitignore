@@ -6,3 +6,4 @@ ping_service/debug
 ping_service/vendor/
 .vagrant/
 file.plan
+version

@@ -21,7 +21,7 @@ docker push thobe/ping_service:0.0.1
 ```bash
 cd ping_service &&\
 docker swarm init &&\
-docker stack deploy -c docker-compose.yml ping_service
+docker stack deploy -c docker-compose.yml ping_servicedocker push thobe/ping_service:0.0.1
 ```
 
 #### Watch the service-chain in Docker Swarm Setup
@@ -59,16 +59,16 @@ docker run -p 80:8080 ping_service
 #### Start a container with parameters
 
 ```bash
-docker run -p 80:8080 ping_service -service_name s1 -consumer 8080
+docker run -p 80:8080 ping_service -service-name s1
 ```
 
 #### Chainging the ping_services
 
 ```bash
 export DOCKER_HOST_IP=$(ip route|awk '/docker/ { print $9 }'|head -n 1) &&\
-docker run -d -p 80:8080 ping_service -service_name s1 -provider_addr $DOCKER_HOST_IP:81 &&\
-docker run -d -p 81:8080 ping_service -service_name s2 -provider_addr $DOCKER_HOST_IP:82 &&\
-docker run -d -p 82:8080 ping_service -service_name s3
+docker run -d -p 80:8080 ping_service -service-name s1 -provider-addr $DOCKER_HOST_IP:81 &&\
+docker run -d -p 81:8080 ping_service -service-name s2 -provider-addr $DOCKER_HOST_IP:82 &&\
+docker run -d -p 82:8080 ping_service -service-name s3
 ```
 
 #### Cleanup

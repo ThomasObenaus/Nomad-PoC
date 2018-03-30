@@ -16,15 +16,22 @@ func main() {
 	var serviceName = flag.String("service-name", "foo", "The name of the consumer service instance (this application instance). Defaults to foo.")
 	var nameOfProvider = flag.String("provider", "", "The service_name of the provider (another instance of this application). Defaults to \"\".")
 	var addrOfProvider = flag.String("provider-addr", "", "The address of the provider (another instance of this application). Defaults to \"\".")
-	var addrOfConsul = flag.String("consul-server-addr", "127.0.0.1:8500", "The addr of the consul-server. Defaults to 127.0.0.1:8500.")
+	var addrOfConsul = flag.String("consul-server-addr", "", "The addr of the consul-server. Defaults to \"\". If not given the provider is searched using DNS.")
 	flag.Parse()
 
-	consul, err := NewConsulClient(*addrOfConsul)
-	if err != nil {
-		log.Println("Error unable to create consul at: ", *addrOfConsul)
+	var consulClient Client
+
+	if len(*addrOfConsul) > 0 {
+		consul, err := NewConsulClient(*addrOfConsul)
+		if err != nil {
+			log.Println("Error unable to create consul at: ", *addrOfConsul)
+		}
+		consulClient = consul
+	} else {
+		log.Println("Service Discovery over consul is disabled.")
 	}
 
-	http.Handle("/ping", &PingService{Name: *serviceName, ProviderAddr: *addrOfProvider, ProviderName: *nameOfProvider, Version: version, ConsulClient: consul})
+	http.Handle("/ping", &PingService{Name: *serviceName, ProviderAddr: *addrOfProvider, ProviderName: *nameOfProvider, Version: version, ConsulClient: consulClient})
 
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		log.Printf("Path '/' is not implemented")

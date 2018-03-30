@@ -40,7 +40,19 @@ func (s *PingService) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		message = "(PONG)"
 	} else {
 		var err error
-		message, err = s.getMessage(s.ProviderName, s.ProviderAddr, hop)
+		addrOfProvider := s.ProviderAddr
+
+		// do service-discovery using consul-http api
+		if s.ConsulClient != nil {
+			addr, err := s.ConsulClient.FindProvider(s.ProviderName)
+			if err != nil {
+				log.Println("[" + s.Name + "," + s.Version + "] Error: Failed to discover service ... " + err.Error())
+			} else {
+				addrOfProvider = addr
+			}
+		}
+
+		message, err = s.getMessage(addrOfProvider, hop)
 		if err != nil {
 			log.Println("[" + s.Name + "," + s.Version + "] Error: " + err.Error())
 		}
@@ -60,18 +72,9 @@ func (s *PingService) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (s *PingService) getMessage(providerName string, providerAddr string, hop int) (string, error) {
-	addrOfProvider := providerAddr
+func (s *PingService) getMessage(providerAddr string, hop int) (string, error) {
 
-	if len(providerName) > 0 {
-		addr, err := s.ConsulClient.FindProvider(providerName)
-		if err != nil {
-			return "(BOING)", err
-		}
-		addrOfProvider = addr
-	}
-
-	url := "http://" + addrOfProvider + "/ping?hop=" + strconv.Itoa(hop)
+	url := "http://" + providerAddr + "/ping?hop=" + strconv.Itoa(hop)
 	log.Println("Call: ", url)
 
 	client := &http.Client{

@@ -1,7 +1,7 @@
 category := service
 name     := ping-service
 aws_reg  := us-east-1
-aws_aid  := 307557990628
+aws_aid  := ...
 
 ################################################################################################################
 # NOTE: The following lines can keep untouched. There is nothing more to configure the category and the name.  #

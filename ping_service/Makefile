@@ -1,7 +1,10 @@
-category := service
-name     := ping-service
-aws_reg  := us-east-1
-aws_aid  := ...
+category    := service
+name        := ping-service
+aws_reg     := us-east-1
+aws_profile := playground
+
+# obtain aws account id
+aws_aid     := $(shell aws sts get-caller-identity --output text --query 'Account' --profile $(aws_profile))
 
 ################################################################################################################
 # NOTE: The following lines can keep untouched. There is nothing more to configure the category and the name.  #
@@ -15,14 +18,14 @@ flag := $(shell git diff-index --quiet HEAD -- || echo "_dirty";)
 tag  := $(date)_$(rev)$(flag)
 
 # Create credentials for Docker for AWS ecr login
-creds := $(shell aws ecr get-login --no-include-email --region $(aws_reg) --profile playground)
+creds := $(shell aws ecr get-login --no-include-email --region $(aws_reg) --profile $(aws_profile))
 
 dev: version build finish
 all: clean version build push finish
 
 version: delim
 	@echo "[INFO] Building version:"
-	@echo $(tag) | tee version
+	@echo "$(tag) | tee version"
 
 credentials: delim
 	@echo "[INFO] Login to AWS ECR"

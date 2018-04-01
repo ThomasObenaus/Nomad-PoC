@@ -20,9 +20,6 @@
   },
   {
     "path": "/home/winnietom/work/projects/MiB3/05_development/infrastructure/tsd.nav.cloud.infrastructure"
-  },
-  {
-    "path": "/home/winnietom/work/projects/golang/src/consul-envoy-xds"
   }
 ],
   "settings": {}

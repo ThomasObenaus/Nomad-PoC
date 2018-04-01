@@ -3,12 +3,13 @@ name        := ping-service
 aws_reg     := us-east-1
 aws_profile := playground
 
-# obtain aws account id
-aws_aid     := $(shell aws sts get-caller-identity --output text --query 'Account' --profile $(aws_profile))
-
 ################################################################################################################
 # NOTE: The following lines can keep untouched. There is nothing more to configure the category and the name.  #
 #################################################################################################################
+
+# obtain aws account id
+aws_aid     := $(shell aws sts get-caller-identity --output text --query 'Account' --profile $(aws_profile))
+
 ecr_url  := $(aws_aid).dkr.ecr.$(aws_reg).amazonaws.com
 
 # Create version tag from git commit message. Indicate if there are uncommited local changes.

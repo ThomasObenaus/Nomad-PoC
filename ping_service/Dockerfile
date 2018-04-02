@@ -23,4 +23,8 @@ RUN go build -o /bin/ping_service
 FROM alpine
 COPY --from=builder /bin/ping_service /bin/ping_service
 
+ARG   VERSION=unknown
+LABEL version=$VERSION
+COPY  version /IMAGE_VERSION
+
 ENTRYPOINT ["/bin/ping_service"]

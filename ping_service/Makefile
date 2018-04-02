@@ -26,7 +26,7 @@ all: clean version build push finish
 
 version: delim
 	@echo "[INFO] Building version:"
-	@echo "$(tag) | tee version"
+	@echo "$(tag)" | tee version
 
 credentials: delim
 	@echo "[INFO] Login to AWS ECR"
